@@ -32,11 +32,13 @@ type Message = {
 
 function ChatRoom({ firestore, auth }: ChatRoomProps) {
   const bottomDiv = useRef<null | HTMLDivElement>(null);
-  const messagesViewRef = useRef<null | HTMLDivElement>(null);
+  const chatViewRef = useRef<null | HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [firstScrollBottom, setFirstScrollBottom] = useState(false);
 
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
+  let [downButtonTop, setDownButtonTop] = useState("0px");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -68,19 +70,50 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
   //   }
 
   useEffect(() => {
-    console.log(
-      messagesViewRef.current?.offsetHeight,
-      window.innerHeight,
-      document.body.scrollHeight
-    );
-    if (window.performance) {
-      if (performance.navigation.type == 1) {
-        bottomDiv.current!.scrollIntoView();
-      } else {
-        bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
-      }
+    if (messages.length > 0 && !firstScrollBottom) {
+      setFirstScrollBottom(true);
+      bottomDiv.current!.scrollIntoView();
+    } else if (
+      Math.abs(
+        chatViewRef.current!.getBoundingClientRect().height +
+          chatViewRef.current!.getBoundingClientRect().y
+      ) <
+      window.innerHeight * 2
+    ) {
+      bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
+    } else {
+      setDownButtonTop("-70px");
     }
   }, [messages]);
+
+  // window.onscroll = () => {
+  //   console.log("hej");
+  // };
+
+  // const [isVisible, setIsVisible] = useState<null | number>();
+  const [isVisible, setIsVisible] = useState(false);
+
+  const options = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 1.0,
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const [entry] = entries;
+      setIsVisible(entry.isIntersecting);
+    }, options);
+    if (bottomDiv.current) observer.observe(bottomDiv.current);
+    return () => {
+      if (bottomDiv.current) observer.unobserve(bottomDiv.current);
+    };
+  }, [bottomDiv, options]);
+
+  function scrollToBottomButton() {
+    bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
+    setDownButtonTop("0px");
+  }
 
   async function sendMessage(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -98,8 +131,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
       uid,
       photoURL,
     });
-
-    // bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
   }
 
   const usersRef = collection(firestore, "users");
@@ -115,7 +146,7 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
   return (
     <>
       <Header auth={auth} />
-      <div className={styles.messages} ref={messagesViewRef}>
+      <div className={styles.messages} ref={chatViewRef}>
         {messages &&
           messages.map((msg) => (
             <ChatMessage
@@ -125,24 +156,41 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
               isFromCurrentUser={msg.uid === auth.currentUser?.uid}
             />
           ))}
-        <div ref={bottomDiv}></div>
+        <div className={styles.bottomDiv} ref={bottomDiv}></div>
       </div>
-      <div className={styles.form}>
-        <form onSubmit={sendMessage}>
-          <input
-            value={formValue}
-            onChange={(e) => {
-              setFormValue(e.target.value);
-              //   isTyping();
-            }}
+      <div className={styles.sendMessageDownButtonContainer}>
+        <button
+          className={styles.arrowDownButton}
+          onClick={scrollToBottomButton}
+          style={{ top: downButtonTop }}
+        >
+          <Icon
+            icon="material-symbols:arrow-downward-rounded"
+            className={styles.arrowDownIcon}
           />
-          <button style={{ backgroundColor: inputButtonColor }} type="submit">
-            <Icon
-              icon="material-symbols:arrow-upward-rounded"
-              className={styles.inputIcon}
+        </button>
+        <div
+          className={`${styles.sendMessageContainer} ${
+            !isVisible && styles.isNotVisible
+          }`}
+        >
+          <form onSubmit={sendMessage}>
+            <input
+              value={formValue}
+              onChange={(e) => {
+                setFormValue(e.target.value);
+                //   isTyping();
+              }}
             />
-          </button>
-        </form>
+            <button style={{ backgroundColor: inputButtonColor }} type="submit">
+              {isVisible}
+              <Icon
+                icon="material-symbols:arrow-upward-rounded"
+                className={styles.inputIcon}
+              />
+            </button>
+          </form>
+        </div>
       </div>
     </>
   );

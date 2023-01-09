@@ -1,57 +1,79 @@
 .messages {
-    margin: 60px 20px 120px;
+    margin: 60px 20px 0px;
     width: 100%;
     height: fit-content;
+    .bottomDiv {
+        height: 120px;
+    }
 }
-
-.form {
+.sendMessageDownButtonContainer {
     position: fixed;
     bottom: 0;
-    width: 100%;
-    background-color: #232323;
-    margin-bottom: 0;
-    padding: 25px;
-    // height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0px -1.1px 2.2px rgb(0 0 0 / 2%), 
-    0px -2.7px 5.3px rgb(0 0 0 / 3%), 
-    0px -5px 10px rgb(0 0 0 / 4%), 
-    0px -8.9px 17.9px rgb(0 0 0 / 4%), 
-    0px -16.7px 33.4px rgb(0 0 0 / 5%), 
-    0px -40px 80px rgb(0 0 0 / 7%);
-    form {
-        // margin-top: -50px;
-        width: 100%;
-        position: relative;
-        input {
-            background-color: #303030;
-            box-shadow: 0 5px #1E1E1E;
-            width: 100%;
-            border: none;
-            font-size: 20px;
-            padding: 15px;
-            padding-right: 100px;
-            height: 60px;
-            border-radius: 100px;
+    .arrowDownButton {
+        height: 45px;
+        // width: 45px;
+        width: 70px;
+        border-radius: 50px;
+        border: none;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0px;
+        transition: all 0.3s ease-in-out;
+        background-color: #4c4c4c;
+        .arrowDownIcon {
+            width: 30px;
+            height: 30px;
         }
-        button {
-            height: 45px;
-            min-width: 45px;
-            margin: 7px;
-            border-radius: 100px;
-            border: none;
-            position: absolute;
-            right: 0;
-            font-size: 20px;
-            .inputIcon {
-                display: flex;
-                justify-self: center;
-                align-self: center;
-                color: white;
-                width: 35px;
-                height: 35px;
+    }
+    .sendMessageContainer {
+        width: 100%;
+        background-color: #232323;
+        padding: 25px;
+        z-index: 1;
+        transition: all 0.3s ease-in-out;
+        &.isNotVisible {
+            box-shadow: 0px -1.1px 2.2px rgb(0 0 0 / 2%), 
+            0px -2.7px 5.3px rgb(0 0 0 / 3%), 
+            0px -5px 10px rgb(0 0 0 / 4%), 
+            0px -8.9px 17.9px rgb(0 0 0 / 4%), 
+            0px -16.7px 33.4px rgb(0 0 0 / 5%);
+        }
+        form {
+            width: 100%;
+            position: relative;
+            input {
+                background-color: #303030;
+                box-shadow: 0 5px #1E1E1E;
+                width: 100%;
+                border: none;
+                font-size: 20px;
+                padding: 15px;
+                padding-right: 100px;
+                height: 60px;
+                border-radius: 100px;
+            }
+            button {
+                height: 45px;
+                min-width: 45px;
+                margin: 7px;
+                border-radius: 100px;
+                border: none;
+                position: absolute;
+                right: 0;
+                font-size: 20px;
+                .inputIcon {
+                    display: flex;
+                    justify-self: center;
+                    align-self: center;
+                    color: white;
+                    width: 35px;
+                    height: 35px;
+                }
             }
         }
     }
