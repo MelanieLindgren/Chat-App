@@ -1,5 +1,4 @@
 import ChatMessage from "../ChatMessage/ChatMessage";
-import Header from "../Header/Header";
 import styles from "./ChatRoom.module.scss";
 
 import {
@@ -38,7 +37,7 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
 
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
-  let [downButtonTop, setDownButtonTop] = useState("0px");
+  let [downButtonTop, setDownButtonTop] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -55,19 +54,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
   }, []);
 
   const [formValue, setFormValue] = useState("");
-  //   let isTypingBool = false;
-
-  //   function isTyping() {
-  //     let oldValue = formValue;
-  //     console.log("Skriver");
-  //     isTypingBool = true;
-  //     const isTypingInterval = setTimeout(() => {
-  //       if (oldValue === formValue) {
-  //         isTypingBool = false;
-  //         return () => clearTimeout(isTypingInterval);
-  //       }
-  //     }, 5000);
-  //   }
 
   useEffect(() => {
     if (messages.length > 0 && !firstScrollBottom) {
@@ -81,16 +67,11 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
       window.innerHeight * 2
     ) {
       bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
-    } else {
+    } else if (messages[messages.length - 1].uid !== auth.currentUser!.uid) {
       setDownButtonTop("-70px");
     }
   }, [messages]);
 
-  // window.onscroll = () => {
-  //   console.log("hej");
-  // };
-
-  // const [isVisible, setIsVisible] = useState<null | number>();
   const [isVisible, setIsVisible] = useState(false);
 
   const options = {
@@ -112,7 +93,7 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
 
   function scrollToBottomButton() {
     bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
-    setDownButtonTop("0px");
+    setDownButtonTop("25px");
   }
 
   async function sendMessage(e: React.FormEvent<HTMLFormElement>) {
@@ -145,7 +126,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
 
   return (
     <>
-      <Header auth={auth} />
       <div className={styles.messages} ref={chatViewRef}>
         {messages &&
           messages.map((msg) => (

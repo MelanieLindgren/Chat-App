@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./App.css";
 import SignIn from "./components/SignIn/SignIn";
 import ChatRoom from "./components/ChatRoom/ChatRoom";
+import Header from "./components/Header/Header";
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -29,7 +30,10 @@ function App() {
   return (
     <>
       {user ? (
-        <ChatRoom firestore={firestore} auth={auth} />
+        <>
+          <Header auth={auth} />
+          <ChatRoom firestore={firestore} auth={auth} />
+        </>
       ) : (
         <SignIn firestore={firestore} auth={auth} />
       )}

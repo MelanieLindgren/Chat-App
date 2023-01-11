@@ -9,9 +9,11 @@
 .sendMessageDownButtonContainer {
     position: fixed;
     bottom: 0;
+    z-index: 4;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
     .arrowDownButton {
         height: 45px;
         // width: 45px;
@@ -22,7 +24,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0px;
+        top: 25px;
         transition: all 0.3s ease-in-out;
         background-color: #4c4c4c;
         .arrowDownIcon {
@@ -32,10 +34,10 @@
     }
     .sendMessageContainer {
         width: 100%;
-        background-color: #232323;
+        background-color: #232323e2;
         padding: 25px;
-        z-index: 1;
         transition: all 0.3s ease-in-out;
+        backdrop-filter: blur(4px);
         &.isNotVisible {
             box-shadow: 0px -1.1px 2.2px rgb(0 0 0 / 2%), 
             0px -2.7px 5.3px rgb(0 0 0 / 3%), 
