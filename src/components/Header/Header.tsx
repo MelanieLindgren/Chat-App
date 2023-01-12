@@ -3,25 +3,41 @@ import { Auth } from "firebase/auth";
 import { useState } from "react";
 import styles from "./Header.module.scss";
 import UserSettings from "../UserSettings/UserSettings";
+import { Firestore } from "firebase/firestore";
+import { boxShadow } from "../../utils";
 
 type HeaderProps = {
+  firestore: Firestore;
   auth: Auth;
 };
 
-function Header({ auth }: HeaderProps) {
+function Header({ firestore, auth }: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  console.log(window.scrollY);
 
-  const boxShadow =
-    "0px 0.4px 2.2px rgba(0, 0, 0, 0.02), 0px 1px 5.3px rgba(0, 0, 0, 0.028), 0px 1.9px 10px rgba(0, 0, 0, 0.035), 0px 3.4px 17.9px rgba(0, 0, 0, 0.042), 0px 6.3px 33.4px rgba(0, 0, 0, 0.05), 0px 15px 80px rgba(0, 0, 0, 0.07)";
+  if (isSettingsOpen) {
+    window.onscroll = function () {
+      window.scrollTo(0, scrollY);
+    };
+  } else {
+    window.onscroll = function () {};
+  }
 
   return (
     <>
       <header
         className={styles.header}
-        style={{ boxShadow: `${isSettingsOpen ? "none" : boxShadow}` }}
+        style={{
+          boxShadow: `${isSettingsOpen ? "none" : boxShadow}`,
+          transitionDelay: `${isSettingsOpen ? "" : "0.3s"}`,
+        }}
       >
         <button
-          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+          onClick={() => {
+            setIsSettingsOpen(!isSettingsOpen);
+            setScrollY(window.scrollY);
+          }}
           className={styles.userSettingsButton}
         >
           <Icon
@@ -34,7 +50,12 @@ function Header({ auth }: HeaderProps) {
         </button>
         <button onClick={() => auth.signOut()}>Sign Out</button>
       </header>
-      <UserSettings isSettingsOpen={isSettingsOpen} />
+      <UserSettings
+        setIsSettingsOpen={setIsSettingsOpen}
+        firestore={firestore}
+        auth={auth}
+        isSettingsOpen={isSettingsOpen}
+      />
     </>
   );
 }

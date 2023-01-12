@@ -9,8 +9,9 @@ import {
   addDoc,
   serverTimestamp,
   onSnapshot,
+  doc,
 } from "firebase/firestore";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import { Auth } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { colors } from "../../utils";
@@ -34,10 +35,11 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
   const chatViewRef = useRef<null | HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [firstScrollBottom, setFirstScrollBottom] = useState(false);
-
+  const [formValue, setFormValue] = useState("");
+  const { uid } = auth.currentUser!;
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
-  let [downButtonTop, setDownButtonTop] = useState("");
+  const [downButtonTop, setDownButtonTop] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -52,8 +54,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
       unsubscribe();
     };
   }, []);
-
-  const [formValue, setFormValue] = useState("");
 
   useEffect(() => {
     if (messages.length > 0 && !firstScrollBottom) {
@@ -104,25 +104,23 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
       return;
     }
 
-    const { uid, photoURL } = auth.currentUser!;
-
     await addDoc(messagesRef, {
       text: formValue,
       createdAt: serverTimestamp(),
       uid,
-      photoURL,
     });
   }
 
-  const usersRef = collection(firestore, "users");
-  const [users] = useCollectionData(usersRef);
-  let inputButtonColor = "";
+  const userRef = doc(firestore, "users", uid);
+  const { "0": user } = useDocumentData(userRef);
 
-  users?.forEach((user) => {
-    if (user.uid == auth.currentUser!.uid) {
-      inputButtonColor = colors[user.colorIndex];
+  const [inputButtonColor, setInputButtonColor] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setInputButtonColor(colors[user.colorIndex]);
     }
-  });
+  }, [user]);
 
   return (
     <>
@@ -133,6 +131,7 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
               key={msg.id}
               message={msg}
               firestore={firestore}
+              userColor={inputButtonColor}
               isFromCurrentUser={msg.uid === auth.currentUser?.uid}
             />
           ))}
@@ -159,7 +158,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
               value={formValue}
               onChange={(e) => {
                 setFormValue(e.target.value);
-                //   isTyping();
               }}
             />
             <button style={{ backgroundColor: inputButtonColor }} type="submit">

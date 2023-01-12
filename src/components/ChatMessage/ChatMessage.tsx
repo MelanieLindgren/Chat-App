@@ -1,23 +1,23 @@
-import { collection, DocumentData, Firestore } from "firebase/firestore";
+import { DocumentData, Firestore } from "firebase/firestore";
 import styles from "./ChatMessage.module.scss";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { colors } from "../../utils/index";
 import { useState } from "react";
 
 type ChatMessageProps = {
+  userColor: string;
   message: DocumentData;
   firestore: Firestore;
   isFromCurrentUser: boolean;
 };
 
 function ChatMessage({
+  userColor,
   message,
-  firestore,
   isFromCurrentUser,
 }: ChatMessageProps) {
-  const { text, createdAt, uid } = message;
+  const { text, createdAt } = message;
   const dateNow = new Date();
   let timestamp: Date | string = dateNow;
+  let [showTime, setShowTime] = useState(false);
 
   function setTimestamp() {
     if (!createdAt) {
@@ -70,18 +70,6 @@ function ChatMessage({
     return timestamp;
   }
 
-  const usersRef = collection(firestore, "users");
-  const [users] = useCollectionData(usersRef);
-  let userColor = "";
-
-  users?.forEach((user) => {
-    if (user.uid == uid) {
-      userColor = colors[user.colorIndex];
-    }
-  });
-
-  let [showTime, setShowTime] = useState(false);
-
   return (
     <div
       className={styles.messageContainer}
@@ -119,6 +107,3 @@ function ChatMessage({
 }
 
 export default ChatMessage;
-function typeOf(createdAt: any) {
-  throw new Error("Function not implemented.");
-}

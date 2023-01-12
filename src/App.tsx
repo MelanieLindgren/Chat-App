@@ -31,7 +31,7 @@ function App() {
     <>
       {user ? (
         <>
-          <Header auth={auth} />
+          <Header firestore={firestore} auth={auth} />
           <ChatRoom firestore={firestore} auth={auth} />
         </>
       ) : (

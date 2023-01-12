@@ -5,11 +5,91 @@
     top: 0;
     left: 0;
     background-color: #303030;
-    // background-color: #303030e9;
-    // backdrop-filter: blur(6px);
     z-index: 7;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     transition: all 0.3s ease-in-out;
+    h1 {
+        max-width: 80%;
+        overflow-wrap: anywhere;
+        margin-bottom: 45px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 80%;
+        div {
+            width: 100%;
+            margin-bottom: 45px;
+            p {
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+            }
+            input {
+                width: 100%;
+                border-radius: 10px;
+                border: none;
+                background-color: #222222;
+                &:focus {
+                    outline: 3px solid #4a4a4a;
+                }
+            }
+            .radioButtons {
+                display: flex;
+                width: 100%;
+                gap: 20px;
+                .radioButton {
+                    position: relative;
+                    width: 40px;
+                    height: 40px;
+                    div {
+                        position: absolute;
+                        border-radius: 50px;
+                        z-index: 1;
+                        pointer-events: none;
+                    }
+                    .border {
+                        width: 40px;
+                        height: 40px;
+                    }
+                    .dot {
+                        // width: 33px;
+                        // height: 33px;
+                        width: 60%;
+                        height: 60%;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+                    input {
+                        cursor: pointer;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        position: absolute;
+                        height: 38px;
+                        width: 38px;
+                        margin: 0;
+                        outline: none;
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+                }
+            }
+        }
+        button {
+            height: 65px;
+            font-size: 25px;
+            background-color: #222222;
+            letter-spacing: 2px;
+            border-radius: 100px;
+            padding: 0 30px;
+            margin-top: 40px;
+        }
+    }
 }

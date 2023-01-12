@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  letter-spacing: 1.3px;
 }
 
 :root {
@@ -20,12 +21,6 @@
   -webkit-text-size-adjust: 100%;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
 body {
   margin: 0;
   display: flex;
@@ -42,6 +37,20 @@ h1 {
 button {
   font-weight: 500;
   cursor: pointer;
+  border: none;
+  border-radius: 10px;
+}
+
+input {
+  border: none;
+  font-size: 20px;
+  padding: 15px;
+  height: 60px;
+  border-radius: 10px;
+}
+
+input:focus {
+  outline: 3px solid rgb(111, 111, 111);
 }
 
 @media (prefers-color-scheme: light) {

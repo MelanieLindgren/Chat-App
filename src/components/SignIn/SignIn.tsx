@@ -5,10 +5,11 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import {
-  addDoc,
   collection,
+  doc,
   Firestore,
   getCountFromServer,
+  setDoc,
 } from "firebase/firestore";
 import styles from "./SignIn.module.scss";
 
@@ -18,8 +19,6 @@ type SignInProps = {
 };
 
 function SignIn({ firestore, auth }: SignInProps) {
-  const userRef = collection(firestore, "users");
-
   function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
@@ -31,9 +30,12 @@ function SignIn({ firestore, auth }: SignInProps) {
 
   async function addUser() {
     const { uid } = auth.currentUser!;
-    let colorIndex = (await getCountFromServer(userRef)).data();
-    await addDoc(userRef, {
-      uid: uid,
+    const userRef = doc(firestore, "users", uid);
+
+    let colorIndex = (
+      await getCountFromServer(collection(firestore, "users"))
+    ).data();
+    await setDoc(userRef, {
       colorIndex: colorIndex.count++,
     });
   }
