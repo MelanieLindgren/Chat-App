@@ -12,7 +12,6 @@ import {
   doc,
 } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { Auth } from "firebase/auth";
 import { useContext, useEffect, useRef, useState } from "react";
 import { colors } from "../../utils";
 import { Icon } from "@iconify/react";
@@ -40,6 +39,36 @@ function useInputButtonColor(firestore: Firestore, uid: string) {
   return inputButtonColor;
 }
 
+function useSetVisibility(
+  bottomDiv: React.MutableRefObject<HTMLDivElement | null>,
+  setDownButtonTop: React.Dispatch<React.SetStateAction<string>>
+) {
+  const [isVisible, setIsVisible] = useState(false);
+  const options = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 1.0,
+  };
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const [entry] = entries;
+      setIsVisible(entry.isIntersecting);
+    }, options);
+    if (bottomDiv.current) {
+      observer.observe(bottomDiv.current);
+    }
+    if (isVisible) {
+      setDownButtonTop("25px");
+    }
+    return () => {
+      if (bottomDiv.current) {
+        observer.unobserve(bottomDiv.current);
+      }
+    };
+  }, [bottomDiv, options]);
+  return isVisible;
+}
+
 function ChatRoom() {
   const { auth, firestore } = useContext(AppContext);
   const bottomDiv = useRef<null | HTMLDivElement>(null);
@@ -53,6 +82,7 @@ function ChatRoom() {
   const [downButtonTop, setDownButtonTop] = useState("");
 
   const inputButtonColor = useInputButtonColor(firestore, uid);
+  const isVisible = useSetVisibility(bottomDiv, setDownButtonTop);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -84,25 +114,6 @@ function ChatRoom() {
       setDownButtonTop("-70px");
     }
   }, [messages]);
-
-  const [isVisible, setIsVisible] = useState(false);
-
-  const options = {
-    root: null,
-    rootMargin: "0px",
-    threshold: 1.0,
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const [entry] = entries;
-      setIsVisible(entry.isIntersecting);
-    }, options);
-    if (bottomDiv.current) observer.observe(bottomDiv.current);
-    return () => {
-      if (bottomDiv.current) observer.unobserve(bottomDiv.current);
-    };
-  }, [bottomDiv, options]);
 
   function scrollToBottomButton() {
     bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
@@ -162,7 +173,7 @@ function ChatRoom() {
               }}
             />
             <button style={{ backgroundColor: inputButtonColor }} type="submit">
-              {isVisible}
+              {/* {isVisible} */}
               <Icon
                 icon="material-symbols:arrow-upward-rounded"
                 className={styles.inputIcon}
