@@ -1,21 +1,14 @@
 import ChatMessage from "../ChatMessage/ChatMessage";
 import styles from "./ChatRoom.module.scss";
 
-import {
-	collection,
-	query,
-	orderBy,
-	addDoc,
-	serverTimestamp,
-	onSnapshot,
-} from "firebase/firestore";
-import { useContext, useEffect, useRef, useState } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useContext, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { AppContext } from "../../App";
 import {
-	useHandleScrollDown,
+	useHandleScrollBehavior,
 	useInputButtonColor,
-	useSetVisibility,
+	useMessages,
 } from "./utils";
 
 export type Message = {
@@ -27,44 +20,25 @@ export type Message = {
 };
 
 function ChatRoom() {
-	const { auth, firestore } = useContext(AppContext);
+	const [formValue, setFormValue] = useState("");
+
 	const bottomDiv = useRef<null | HTMLDivElement>(null);
 	const chatViewRef = useRef<null | HTMLDivElement>(null);
-	const [messages, setMessages] = useState<Message[]>([]);
-	const [formValue, setFormValue] = useState("");
-	const { uid } = auth.currentUser!;
+
+	const { auth, firestore } = useContext(AppContext);
 	const messagesRef = collection(firestore, "messages");
-	const q = query(messagesRef, orderBy("createdAt"));
-	const [downButtonTop, setDownButtonTop] = useState("");
+
+	const { uid } = auth.currentUser!;
 
 	const inputButtonColor = useInputButtonColor(firestore, uid);
-	const isVisible = useSetVisibility(bottomDiv, setDownButtonTop);
-	useHandleScrollDown({
-		auth,
-		bottomDiv,
-		chatViewRef,
-		messages,
-		setDownButtonTop,
-	});
-
-	useEffect(() => {
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const messagesData: Message[] = [];
-			querySnapshot.forEach((doc) => {
-				messagesData.push({ ...doc.data(), id: doc.id } as Message);
-			});
-			setMessages(messagesData);
+	const messages = useMessages(messagesRef);
+	const { isVisible, downButtonTop, handleScrollToBottomButton } =
+		useHandleScrollBehavior({
+			auth,
+			bottomDiv,
+			chatViewRef,
+			messages,
 		});
-
-		return () => {
-			unsubscribe();
-		};
-	}, []);
-
-	function scrollToBottomButton() {
-		bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
-		setDownButtonTop("25px");
-	}
 
 	async function sendMessage(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -98,7 +72,7 @@ function ChatRoom() {
 			<div className={styles.sendMessageDownButtonContainer}>
 				<button
 					className={styles.arrowDownButton}
-					onClick={scrollToBottomButton}
+					onClick={handleScrollToBottomButton}
 					style={{ top: downButtonTop }}
 				>
 					<Icon
@@ -119,7 +93,6 @@ function ChatRoom() {
 							}}
 						/>
 						<button style={{ backgroundColor: inputButtonColor }} type="submit">
-							{/* {isVisible} */}
 							<Icon
 								icon="material-symbols:arrow-upward-rounded"
 								className={styles.inputIcon}
