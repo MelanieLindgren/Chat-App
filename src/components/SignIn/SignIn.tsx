@@ -1,5 +1,4 @@
 import {
-  Auth,
   getAdditionalUserInfo,
   GoogleAuthProvider,
   signInWithPopup,
@@ -7,18 +6,15 @@ import {
 import {
   collection,
   doc,
-  Firestore,
   getCountFromServer,
   setDoc,
 } from "firebase/firestore";
+import { useContext } from "react";
+import { AppContext } from "../../App";
 import styles from "./SignIn.module.scss";
 
-type SignInProps = {
-  firestore: Firestore;
-  auth: Auth;
-};
-
-function SignIn({ firestore, auth }: SignInProps) {
+function SignIn() {
+  const { auth, firestore } = useContext(AppContext);
   function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
@@ -35,15 +31,14 @@ function SignIn({ firestore, auth }: SignInProps) {
     let colorIndex = (
       await getCountFromServer(collection(firestore, "users"))
     ).data();
-    await setDoc(userRef, {
-      colorIndex: colorIndex.count++,
-    });
   }
 
   return (
-    <div className={styles.signIn}>
-      <button onClick={signInWithGoogle}>Sign in with Google</button>
-    </div>
+    <>
+      <div className={styles.signIn}>
+        <button onClick={signInWithGoogle}>Sign in with Google</button>
+      </div>
+    </>
   );
 }
 

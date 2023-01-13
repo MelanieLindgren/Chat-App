@@ -1,20 +1,16 @@
 import { Icon } from "@iconify/react";
-import { Auth } from "firebase/auth";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import styles from "./Header.module.scss";
 import UserSettings from "../UserSettings/UserSettings";
-import { Firestore } from "firebase/firestore";
 import { boxShadow } from "../../utils";
+import { AppContext } from "../../App";
+import { doc } from "firebase/firestore";
 
-type HeaderProps = {
-  firestore: Firestore;
-  auth: Auth;
-};
-
-function Header({ firestore, auth }: HeaderProps) {
+function Header() {
+  const { auth } = useContext(AppContext);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   const [scrollY, setScrollY] = useState(0);
-  console.log(window.scrollY);
 
   if (isSettingsOpen) {
     window.onscroll = function () {
@@ -52,8 +48,6 @@ function Header({ firestore, auth }: HeaderProps) {
       </header>
       <UserSettings
         setIsSettingsOpen={setIsSettingsOpen}
-        firestore={firestore}
-        auth={auth}
         isSettingsOpen={isSettingsOpen}
       />
     </>

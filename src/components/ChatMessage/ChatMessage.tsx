@@ -1,73 +1,50 @@
-import { DocumentData, Firestore } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  DocumentData,
+  Firestore,
+  query,
+  where,
+} from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { AppContext } from "../../App";
+import { colors } from "../../utils";
 import styles from "./ChatMessage.module.scss";
-import { useState } from "react";
+import { setTimestamp } from "./utils";
 
 type ChatMessageProps = {
   userColor: string;
   message: DocumentData;
-  firestore: Firestore;
   isFromCurrentUser: boolean;
 };
 
 function ChatMessage({
-  userColor,
+  // userColor,
   message,
   isFromCurrentUser,
 }: ChatMessageProps) {
-  const { text, createdAt } = message;
+  const { firestore } = useContext(AppContext);
+  const { text, createdAt, uid } = message;
+  const [showTime, setShowTime] = useState(false);
+  const [userColor, setUserColor] = useState("");
   const dateNow = new Date();
-  let timestamp: Date | string = dateNow;
-  let [showTime, setShowTime] = useState(false);
+  let timestamp: string = "";
 
-  function setTimestamp() {
-    if (!createdAt) {
-      timestamp = "now";
-      return timestamp;
+  const userRef = doc(firestore, "users", uid);
+  const { "0": user } = useDocumentData(userRef);
+
+  useEffect(() => {
+    if (user) {
+      setUserColor(colors[user.colorIndex]);
     }
+  }, [user]);
 
+  if (!createdAt) {
+    timestamp = "now";
+  } else {
     const date = createdAt.toDate() as Date;
-    const time = date.toLocaleTimeString(navigator.language, {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    if (date.getFullYear() !== dateNow.getFullYear()) {
-      timestamp =
-        date.toLocaleDateString("en-gb", { dateStyle: "medium" }) + " " + time;
-    } else if (
-      date.getMonth() !== dateNow.getMonth() ||
-      date.getDate() < dateNow.getDate() - 6
-    ) {
-      timestamp =
-        date.toLocaleDateString("en-gb", {
-          weekday: "short",
-          day: "numeric",
-          month: "short",
-        }) +
-        " " +
-        time;
-    } else if (
-      time ===
-      dateNow.toLocaleTimeString(navigator.language, {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    ) {
-      timestamp = "now";
-    } else if (date.getDate() === dateNow.getDate()) {
-      timestamp = "today" + " " + time;
-    } else if (date.getDate() === dateNow.getDate() - 1) {
-      timestamp = "yesterday" + " " + time; // funkar inte när date är/blir 0
-    } else {
-      timestamp =
-        date.toLocaleDateString("en-gb", {
-          weekday: "short",
-        }) +
-        " " +
-        time;
-    }
-
-    return timestamp;
+    timestamp = setTimestamp(date, dateNow, timestamp);
   }
 
   return (
@@ -83,7 +60,7 @@ function ChatMessage({
           marginBottom: `${showTime ? "0" : "-50px"}`,
         }}
       >
-        {setTimestamp()}
+        {timestamp}
       </p>
       <div
         className={`${styles.message} ${

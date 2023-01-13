@@ -13,14 +13,10 @@ import {
 } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { Auth } from "firebase/auth";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { colors } from "../../utils";
 import { Icon } from "@iconify/react";
-
-type ChatRoomProps = {
-  firestore: Firestore;
-  auth: Auth;
-};
+import { AppContext } from "../../App";
 
 type Message = {
   createdAt: any;
@@ -30,7 +26,22 @@ type Message = {
   id: string;
 };
 
-function ChatRoom({ firestore, auth }: ChatRoomProps) {
+function useInputButtonColor(firestore: Firestore, uid: string) {
+  const [inputButtonColor, setInputButtonColor] = useState("");
+  const userRef = doc(firestore, "users", uid);
+  const { "0": user } = useDocumentData(userRef);
+
+  useEffect(() => {
+    if (user) {
+      setInputButtonColor(colors[user.colorIndex]);
+    }
+  }, [user]);
+
+  return inputButtonColor;
+}
+
+function ChatRoom() {
+  const { auth, firestore } = useContext(AppContext);
   const bottomDiv = useRef<null | HTMLDivElement>(null);
   const chatViewRef = useRef<null | HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -40,6 +51,8 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
   const [downButtonTop, setDownButtonTop] = useState("");
+
+  const inputButtonColor = useInputButtonColor(firestore, uid);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -111,17 +124,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
     });
   }
 
-  const userRef = doc(firestore, "users", uid);
-  const { "0": user } = useDocumentData(userRef);
-
-  const [inputButtonColor, setInputButtonColor] = useState("");
-
-  useEffect(() => {
-    if (user) {
-      setInputButtonColor(colors[user.colorIndex]);
-    }
-  }, [user]);
-
   return (
     <>
       <div className={styles.messages} ref={chatViewRef}>
@@ -130,7 +132,6 @@ function ChatRoom({ firestore, auth }: ChatRoomProps) {
             <ChatMessage
               key={msg.id}
               message={msg}
-              firestore={firestore}
               userColor={inputButtonColor}
               isFromCurrentUser={msg.uid === auth.currentUser?.uid}
             />

@@ -1,35 +1,46 @@
-import { Auth } from "firebase/auth";
-import { doc, Firestore, updateDoc } from "firebase/firestore";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  addDoc,
+  collection,
+  doc,
+  getCountFromServer,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import { AppContext } from "../../App";
 import { colors } from "../../utils";
 import styles from "./UserSettings.module.scss";
 
 type UserSettingsProps = {
   setIsSettingsOpen: Dispatch<SetStateAction<boolean>>;
-  auth: Auth;
-  firestore: Firestore;
   isSettingsOpen: boolean;
 };
 
 function UserSettings({
-  auth,
-  firestore,
   isSettingsOpen,
   setIsSettingsOpen,
 }: UserSettingsProps) {
   const [nicknameValue, setNicknameValue] = useState("");
+  const { auth, firestore } = useContext(AppContext);
   const { uid } = auth.currentUser!;
   const userRef = doc(firestore, "users", uid);
   const { "0": user } = useDocumentData(userRef);
-  const [nickname, setNickname] = useState("");
   const [userColor, setUserColor] = useState("");
 
   useEffect(() => {
     if (user) {
       setUserColor(colors[user.colorIndex]);
-      setNickname(user.name);
       setNicknameValue(user.name);
+    } else {
+      setUserColor(colors[0]);
+      setNicknameValue("user");
     }
   }, [user, isSettingsOpen]);
 
@@ -40,10 +51,17 @@ function UserSettings({
     if (!nicknameValue.trim()) {
       return;
     }
-    await updateDoc(userRef, {
-      colorIndex: colors.indexOf(userColor),
-      name: nicknameValue,
-    });
+    if (user) {
+      await updateDoc(userRef, {
+        colorIndex: colors.indexOf(userColor),
+        name: nicknameValue,
+      });
+    } else {
+      await setDoc(userRef, {
+        colorIndex: colors.indexOf(userColor),
+        name: nicknameValue,
+      });
+    }
   }
 
   return (
@@ -53,12 +71,12 @@ function UserSettings({
       }}
       className={styles.userSettings}
     >
-      <h1>{nickname}</h1>
+      <h1>{nicknameValue}</h1>
       <form onSubmit={updateSettings}>
         <div className={styles.nicknameInput}>
           <p>Nickname</p>
           <input
-            maxLength={10}
+            // maxLength={15}
             value={nicknameValue}
             onChange={(e) => {
               setNicknameValue(e.target.value);
@@ -69,26 +87,30 @@ function UserSettings({
           <p>Color</p>
           <div className={styles.radioButtons}>
             {colors.map((color) => (
-              <div className={styles.radioButton}>
+              <div
+                key={colors.indexOf(color)}
+                className={styles.radioButton}
+                onClick={() => {
+                  setUserColor(color);
+                }}
+              >
                 <div
                   className={styles.border}
                   style={{
                     border: "4px solid" + color,
                   }}
                 ></div>
-                <input
+                <div
+                  className={styles.input}
                   onClick={() => {
                     setUserColor(color);
                   }}
-                  type="radio"
-                  name="color"
-                  checked={userColor === color}
-                ></input>
+                ></div>
                 <div
                   className={styles.dot}
                   style={{
                     backgroundColor: `${
-                      userColor === color ? color : "#3B3B3B"
+                      userColor === color ? color : "#303030"
                     }`,
                   }}
                 ></div>
