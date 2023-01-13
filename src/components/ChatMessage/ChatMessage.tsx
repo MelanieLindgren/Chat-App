@@ -27,7 +27,9 @@ function ChatMessage({
   const { firestore } = useContext(AppContext);
   const { text, createdAt, uid } = message;
   const [showTime, setShowTime] = useState(false);
+  const [showName, setShowName] = useState(false);
   const [userColor, setUserColor] = useState("");
+  const [userName, setUserName] = useState("");
   const dateNow = new Date();
   let timestamp: string = "";
 
@@ -37,6 +39,7 @@ function ChatMessage({
   useEffect(() => {
     if (user) {
       setUserColor(colors[user.colorIndex]);
+      setUserName(user.name);
     }
   }, [user]);
 
@@ -52,6 +55,7 @@ function ChatMessage({
       className={styles.messageContainer}
       onClick={() => {
         setShowTime(!showTime);
+        setShowName(!showName);
       }}
     >
       <p
@@ -78,6 +82,14 @@ function ChatMessage({
           className={styles.chatTriangleShadow}
           style={{ borderTop: "20px solid" + userColor }}
         ></div>
+        <p
+          className={`${styles.userName} ${
+            isFromCurrentUser && `${styles.currentUser}`
+          }`}
+          style={{ bottom: `${showName ? "-20px" : "15px"}` }}
+        >
+          {userName}
+        </p>
       </div>
     </div>
   );

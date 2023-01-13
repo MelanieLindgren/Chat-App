@@ -1,78 +1,76 @@
 .messages {
-    margin: 60px 20px 0px;
-    width: 100%;
-    height: fit-content;
-    .bottomDiv {
-        height: 120px;
-    }
+  margin: 60px 20px 0px;
+  width: 100%;
+  height: fit-content;
+  .bottomDiv {
+    height: 120px;
+  }
 }
 .sendMessageDownButtonContainer {
-    position: fixed;
-    bottom: 0;
-    z-index: 4;
+  position: fixed;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  .arrowDownButton {
+    height: 45px;
+    // width: 45px;
+    width: 70px;
+    border-radius: 50px;
+    border: none;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    top: 25px;
+    transition: all 0.3s ease-in-out;
+    background-color: #4c4c4c;
+    .arrowDownIcon {
+      width: 30px;
+      height: 30px;
+    }
+  }
+  .sendMessageContainer {
     width: 100%;
-    .arrowDownButton {
+    background-color: #232323e2;
+    padding: 25px;
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(4px);
+    &.isNotVisible {
+      box-shadow: 0px -1.1px 2.2px rgb(0 0 0 / 2%),
+        0px -2.7px 5.3px rgb(0 0 0 / 3%), 0px -5px 10px rgb(0 0 0 / 4%),
+        0px -8.9px 17.9px rgb(0 0 0 / 4%), 0px -16.7px 33.4px rgb(0 0 0 / 5%);
+    }
+    form {
+      width: 100%;
+      position: relative;
+      input {
+        background-color: #303030;
+        box-shadow: 0 5px #1e1e1e;
+        width: 100%;
+        padding-right: 100px;
+        border-radius: 100px;
+      }
+      button {
         height: 45px;
-        // width: 45px;
-        width: 70px;
-        border-radius: 50px;
+        min-width: 45px;
+        margin: 7px;
+        border-radius: 100px;
         border: none;
         position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 25px;
-        transition: all 0.3s ease-in-out;
-        background-color: #4c4c4c;
-        .arrowDownIcon {
-            width: 30px;
-            height: 30px;
+        right: 0;
+        font-size: 20px;
+        .inputIcon {
+          display: flex;
+          justify-self: center;
+          align-self: center;
+          color: white;
+          width: 35px;
+          height: 35px;
         }
+      }
     }
-    .sendMessageContainer {
-        width: 100%;
-        background-color: #232323e2;
-        padding: 25px;
-        transition: all 0.3s ease-in-out;
-        backdrop-filter: blur(4px);
-        &.isNotVisible {
-            box-shadow: 0px -1.1px 2.2px rgb(0 0 0 / 2%), 
-            0px -2.7px 5.3px rgb(0 0 0 / 3%), 
-            0px -5px 10px rgb(0 0 0 / 4%), 
-            0px -8.9px 17.9px rgb(0 0 0 / 4%), 
-            0px -16.7px 33.4px rgb(0 0 0 / 5%);
-        }
-        form {
-            width: 100%;
-            position: relative;
-            input {
-                background-color: #303030;
-                box-shadow: 0 5px #1E1E1E;
-                width: 100%;
-                padding-right: 100px;
-                border-radius: 100px;
-            }
-            button {
-                height: 45px;
-                min-width: 45px;
-                margin: 7px;
-                border-radius: 100px;
-                border: none;
-                position: absolute;
-                right: 0;
-                font-size: 20px;
-                .inputIcon {
-                    display: flex;
-                    justify-self: center;
-                    align-self: center;
-                    color: white;
-                    width: 35px;
-                    height: 35px;
-                }
-            }
-        }
-    }
+  }
 }
