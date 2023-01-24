@@ -83,7 +83,7 @@ export function useHandleScrollBehavior({
 		) {
 			bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
 		} else if (messages[messages.length - 1].uid !== auth.currentUser!.uid) {
-			setDownButtonTop("-70px");
+			setDownButtonTop("-4.5rem");
 		}
 	}, [messages]);
 
@@ -96,7 +96,7 @@ export function useHandleScrollBehavior({
 			observer.observe(bottomDiv.current);
 		}
 		if (isVisible) {
-			setDownButtonTop("25px");
+			setDownButtonTop("2rem");
 		}
 		return () => {
 			if (bottomDiv.current) {
@@ -107,7 +107,7 @@ export function useHandleScrollBehavior({
 
 	function handleScrollToBottomButton() {
 		bottomDiv.current!.scrollIntoView({ behavior: "smooth" });
-		setDownButtonTop("25px");
+		setDownButtonTop("2rem");
 	}
 
 	return { isVisible, downButtonTop, handleScrollToBottomButton };
