@@ -1,11 +1,4 @@
-import {
-	addDoc,
-	collection,
-	doc,
-	getCountFromServer,
-	setDoc,
-	updateDoc,
-} from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import {
 	Dispatch,
 	SetStateAction,
@@ -28,7 +21,14 @@ function UserSettings({
 	setIsSettingsOpen,
 }: UserSettingsProps) {
 	const [nicknameValue, setNicknameValue] = useState("");
-	const { auth, firestore } = useContext(AppContext);
+	const {
+		auth,
+		firestore,
+		displayMessageName,
+		displayMessageTime,
+		toggleDisplayMessageName,
+		toggleDisplayMessageTime,
+	} = useContext(AppContext);
 	const { uid } = auth.currentUser!;
 	const userRef = doc(firestore, "users", uid);
 	const { "0": user } = useDocumentData(userRef);
@@ -119,19 +119,25 @@ function UserSettings({
 					</div>
 				</div>
 				<div className={`${styles.inputContainer} ${styles.showTextContainer}`}>
-					<p>Show...</p>
+					<p>Display</p>
 					<div className={styles.showTimeAndNameInput}>
 						<div>
 							<p>time</p>
-							<div className={styles.switch}>
-								<input type="checkbox" />
+							<div
+								className={styles.switch}
+								onChange={toggleDisplayMessageTime}
+							>
+								<input type="checkbox" checked={displayMessageTime} />
 								<div className={styles.slider}></div>
 							</div>
 						</div>
 						<div>
 							<p>name</p>
-							<div className={styles.switch}>
-								<input type="checkbox" />
+							<div
+								className={styles.switch}
+								onChange={toggleDisplayMessageName}
+							>
+								<input type="checkbox" checked={displayMessageName} />
 								<div className={styles.slider}></div>
 							</div>
 						</div>
