@@ -21,6 +21,12 @@
   -webkit-text-size-adjust: 100%;
 }
 
+@media screen and (min-width: 600px) {
+  :root {
+    /* font-size: 14px; */
+  }
+}
+
 body {
   margin: 0;
   display: flex;
@@ -29,10 +35,10 @@ body {
   min-height: 100vh;
 }
 
-h1 {
+/* h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
+} */
 
 button {
   font-weight: 500;
@@ -43,22 +49,12 @@ button {
 
 input {
   border: none;
-  font-size: 20px;
-  padding: 15px;
-  height: 60px;
+  font-size: 1.25rem;
+  padding: 0.9rem;
+  height: 3.75rem;
   border-radius: 10px;
 }
 
 input:focus {
   outline: 3px solid rgb(111, 111, 111);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

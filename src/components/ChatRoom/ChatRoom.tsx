@@ -80,26 +80,23 @@ function ChatRoom() {
 						className={styles.arrowDownIcon}
 					/>
 				</button>
-				<div
-					className={`${styles.sendMessageContainer} ${
-						!isVisible && styles.isNotVisible
-					}`}
+				<form
+					onSubmit={sendMessage}
+					className={`${!isVisible && styles.isNotVisible}`}
 				>
-					<form onSubmit={sendMessage}>
-						<input
-							value={formValue}
-							onChange={(e) => {
-								setFormValue(e.target.value);
-							}}
+					<input
+						value={formValue}
+						onChange={(e) => {
+							setFormValue(e.target.value);
+						}}
+					/>
+					<button style={{ backgroundColor: inputButtonColor }} type="submit">
+						<Icon
+							icon="material-symbols:arrow-upward-rounded"
+							className={styles.inputIcon}
 						/>
-						<button style={{ backgroundColor: inputButtonColor }} type="submit">
-							<Icon
-								icon="material-symbols:arrow-upward-rounded"
-								className={styles.inputIcon}
-							/>
-						</button>
-					</form>
-				</div>
+					</button>
+				</form>
 			</div>
 		</>
 	);
