@@ -97,7 +97,7 @@ function UserSettings({
 								<div
 									className={styles.border}
 									style={{
-										border: "4px solid" + color,
+										border: "0.25rem solid" + color,
 									}}
 								></div>
 								<div
@@ -118,7 +118,9 @@ function UserSettings({
 						))}
 					</div>
 				</div>
-				<div className={`${styles.inputContainer} ${styles.showTextContainer}`}>
+				<div
+					className={`${styles.inputContainer} ${styles.showInputContainer}`}
+				>
 					<p>Display</p>
 					<div className={styles.showTimeAndNameInput}>
 						<div>

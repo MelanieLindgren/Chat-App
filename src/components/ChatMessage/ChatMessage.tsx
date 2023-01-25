@@ -1,11 +1,4 @@
-import {
-	collection,
-	doc,
-	DocumentData,
-	Firestore,
-	query,
-	where,
-} from "firebase/firestore";
+import { doc, DocumentData } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { AppContext } from "../../App";
@@ -19,11 +12,7 @@ type ChatMessageProps = {
 	isFromCurrentUser: boolean;
 };
 
-function ChatMessage({
-	// userColor,
-	message,
-	isFromCurrentUser,
-}: ChatMessageProps) {
+function ChatMessage({ message, isFromCurrentUser }: ChatMessageProps) {
 	const { firestore, displayMessageName, displayMessageTime } =
 		useContext(AppContext);
 	const { text, createdAt, uid } = message;
@@ -59,16 +48,18 @@ function ChatMessage({
 				setDisplayName(!displayName);
 			}}
 		>
-			<p
-				className={`${styles.time}`}
-				style={{
-					marginBottom: `${
-						displayMessageTime ? "0" : displayTime ? "0" : "-50px"
-					}`,
-				}}
-			>
-				{timestamp}
-			</p>
+			<div className={`${styles.timeContainer}`}>
+				<p
+					className={`${styles.time}`}
+					style={{
+						marginTop: `${
+							displayMessageTime ? "0" : displayTime ? "0" : "50px"
+						}`,
+					}}
+				>
+					{timestamp}
+				</p>
+			</div>
 			<div
 				className={`${styles.message} ${
 					isFromCurrentUser && `${styles.currentUser}`
