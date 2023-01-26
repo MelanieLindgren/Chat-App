@@ -88,20 +88,17 @@
 	}
 }
 @media screen and (max-width: 699px) {
-	.messageContainer {
-		.message {
-			width: 100%;
-		}
+	.chatText {
+		max-width: 100%;
 	}
 }
 @media screen and (min-width: 700px) {
-	.messageContainer {
-		.message {
-			.chatText {
-				// font-size: 1.7rem;
-				// padding: 1.5rem;
-			}
-			// width: 80%;
-		}
+	.chatText {
+		max-width: 70%;
+	}
+}
+@media screen and (min-width: 1300px) {
+	.chatText {
+		max-width: 55%;
 	}
 }
