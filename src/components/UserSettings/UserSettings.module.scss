@@ -1,32 +1,36 @@
-.userSettings {
+.userSettingsContainer {
 	position: fixed;
-	height: 100%;
+	height: 100vh;
 	width: 100%;
-	top: 0;
+	overflow: scroll;
 	left: 0;
 	background-color: #303030;
 	z-index: 7;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
 	transition: all 0.3s ease-in-out;
-	h1 {
-		min-height: 4rem;
-		line-height: 1.1;
-		max-width: 80%;
-		overflow-wrap: anywhere;
-		text-align: center;
-		font-size: 3rem;
+	.userSettings {
 		display: flex;
+		justify-content: center;
 		align-items: center;
-	}
-	button {
-		height: 4rem;
-		font-size: 1.5rem;
-		background-color: #222222;
-		letter-spacing: 2px;
-		border-radius: 100px;
+		flex-direction: column;
+		width: 100%;
+		margin: 5rem 0;
+		h1 {
+			min-height: 4rem;
+			line-height: 1.1;
+			max-width: 80%;
+			overflow-wrap: anywhere;
+			text-align: center;
+			font-size: 3rem;
+			display: flex;
+			align-items: center;
+		}
+		button {
+			height: 4rem;
+			font-size: 1.5rem;
+			background-color: #222222;
+			letter-spacing: 2px;
+			border-radius: 100px;
+		}
 	}
 }
 .inputContainer {
@@ -45,50 +49,50 @@
 			outline: 3px solid #4a4a4a;
 		}
 	}
-	.radioButtons {
-		display: flex;
-		width: 100%;
-		margin-left: 0px;
+}
+.radioButtons {
+	display: flex;
+	width: 100%;
+	margin-left: 0px;
+	margin-bottom: 0;
+	justify-content: space-around;
+	.radioButton {
+		position: relative;
+		width: 2.5rem;
+		height: 2.5rem;
 		margin-bottom: 0;
-		justify-content: space-around;
-		.radioButton {
-			position: relative;
+		cursor: pointer;
+		div {
+			position: absolute;
+			border-radius: 50rem;
+			z-index: 1;
+			pointer-events: none;
+		}
+		.border {
 			width: 2.5rem;
 			height: 2.5rem;
-			margin-bottom: 0;
-			cursor: pointer;
-			div {
-				position: absolute;
-				border-radius: 50rem;
-				z-index: 1;
-				pointer-events: none;
-			}
-			.border {
-				width: 2.5rem;
-				height: 2.5rem;
-			}
-			.dot {
-				width: 60%;
-				height: 60%;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				&:focus-visible {
-					outline: none;
-				}
-			}
-			.input {
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				position: absolute;
-				height: 2.4rem;
-				width: 2.4rem;
-				margin: 0;
+		}
+		.dot {
+			width: 60%;
+			height: 60%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			&:focus-visible {
 				outline: none;
-				&:focus {
-					outline: none;
-				}
+			}
+		}
+		.input {
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			position: absolute;
+			height: 2.4rem;
+			width: 2.4rem;
+			margin: 0;
+			outline: none;
+			&:focus {
+				outline: none;
 			}
 		}
 	}

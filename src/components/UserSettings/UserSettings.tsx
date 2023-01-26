@@ -69,84 +69,86 @@ function UserSettings({
 			style={{
 				top: `${isSettingsOpen ? "0" : "-100vh"}`,
 			}}
-			className={styles.userSettings}
+			className={styles.userSettingsContainer}
 		>
-			<h1>{nicknameValue}</h1>
-			<form onSubmit={updateSettings}>
-				<div className={`${styles.inputContainer} ${styles.nicknameInput}`}>
-					<p>Nickname</p>
-					<input
-						maxLength={15}
-						value={nicknameValue}
-						onChange={(e) => {
-							setNicknameValue(e.target.value);
-						}}
-					/>
-				</div>
-				<div className={`${styles.inputContainer} ${styles.colorInput}`}>
-					<p>Color</p>
-					<div className={styles.radioButtons}>
-						{colors.map((color) => (
-							<div
-								key={colors.indexOf(color)}
-								className={styles.radioButton}
-								onClick={() => {
-									setUserColor(color);
-								}}
-							>
+			<div className={styles.userSettings}>
+				<h1>{nicknameValue}</h1>
+				<form onSubmit={updateSettings}>
+					<div className={`${styles.inputContainer} ${styles.nicknameInput}`}>
+						<p>Nickname</p>
+						<input
+							maxLength={15}
+							value={nicknameValue}
+							onChange={(e) => {
+								setNicknameValue(e.target.value);
+							}}
+						/>
+					</div>
+					<div className={`${styles.inputContainer} ${styles.colorInput}`}>
+						<p>Color</p>
+						<div className={styles.radioButtons}>
+							{colors.map((color) => (
 								<div
-									className={styles.border}
-									style={{
-										border: "0.25rem solid" + color,
-									}}
-								></div>
-								<div
-									className={styles.input}
+									key={colors.indexOf(color)}
+									className={styles.radioButton}
 									onClick={() => {
 										setUserColor(color);
 									}}
-								></div>
+								>
+									<div
+										className={styles.border}
+										style={{
+											border: "0.25rem solid" + color,
+										}}
+									></div>
+									<div
+										className={styles.input}
+										onClick={() => {
+											setUserColor(color);
+										}}
+									></div>
+									<div
+										className={styles.dot}
+										style={{
+											backgroundColor: `${
+												userColor === color ? color : "#303030"
+											}`,
+										}}
+									></div>
+								</div>
+							))}
+						</div>
+					</div>
+					<div
+						className={`${styles.inputContainer} ${styles.showInputContainer}`}
+					>
+						<p>Display</p>
+						<div className={styles.showTimeAndNameInput}>
+							<div>
+								<p>time</p>
 								<div
-									className={styles.dot}
-									style={{
-										backgroundColor: `${
-											userColor === color ? color : "#303030"
-										}`,
-									}}
-								></div>
+									className={styles.switch}
+									onChange={toggleDisplayMessageTime}
+								>
+									<input type="checkbox" checked={displayMessageTime} />
+									<div className={styles.slider}></div>
+								</div>
 							</div>
-						))}
-					</div>
-				</div>
-				<div
-					className={`${styles.inputContainer} ${styles.showInputContainer}`}
-				>
-					<p>Display</p>
-					<div className={styles.showTimeAndNameInput}>
-						<div>
-							<p>time</p>
-							<div
-								className={styles.switch}
-								onChange={toggleDisplayMessageTime}
-							>
-								<input type="checkbox" checked={displayMessageTime} />
-								<div className={styles.slider}></div>
-							</div>
-						</div>
-						<div>
-							<p>name</p>
-							<div
-								className={styles.switch}
-								onChange={toggleDisplayMessageName}
-							>
-								<input type="checkbox" checked={displayMessageName} />
-								<div className={styles.slider}></div>
+							<div>
+								<p>name</p>
+								<div
+									className={styles.switch}
+									onChange={toggleDisplayMessageName}
+								>
+									<input type="checkbox" checked={displayMessageName} />
+									<div className={styles.slider}></div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<button type="submit">Submit</button>
-			</form>
+					<button type="submit">Submit</button>
+				</form>
+			</div>
 		</div>
 	);
 }
