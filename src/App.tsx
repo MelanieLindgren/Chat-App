@@ -9,7 +9,7 @@ import { initializeApp } from "firebase/app";
 import { Auth, getAuth } from "firebase/auth";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { doc, Firestore, getFirestore } from "firebase/firestore";
+import { Firestore, getFirestore } from "firebase/firestore";
 import localforage from "localforage";
 
 const firebaseConfig = {
